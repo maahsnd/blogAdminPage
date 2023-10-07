@@ -1,17 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { UserProvider } from './UserContext';
-import ProtectedRoute from './ProtectedRoute';
-import Login from './Login';
-import Dashboard from './Dashboard';
+import { UserProvider } from './components/UserContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
     <Router>
       <UserProvider>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <ProtectedRoute path="/dashboard" element={<Dashboard />} />
+          <Route path="/log-in" element={<Login />} />
         </Routes>
       </UserProvider>
     </Router>
