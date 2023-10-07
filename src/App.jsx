@@ -11,6 +11,7 @@ function App() {
       <UserProvider>
         <Routes>
           <Route path="/log-in" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </UserProvider>
     </Router>
