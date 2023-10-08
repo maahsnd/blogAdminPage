@@ -69,7 +69,7 @@ export default function AllPosts() {
               </h3>
               <h4>By: {post.user.user_name}</h4>
               <p>{post.formatted_date}</p>
-              <p>{post.text}</p>
+
               {post.published ? (
                 <button onClick={(e) => editPublishStatus(e, post, false)}>
                   Unpublish post
