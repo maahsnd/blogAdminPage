@@ -58,11 +58,16 @@ export default function AllPosts() {
   };
 
   if (user && user.authenticated) {
+    const filteredPosts = posts.filter((post) => post.user == user._id);
+    if (filteredPosts.length < 1) {
+      return <p>You have no posts</p>;
+    }
+
     return (
       <div>
         <h1>Posts</h1>
         {posts.length > 0 ? (
-          posts.map((post) => (
+          filteredPosts.map((post) => (
             <div key={post._id}>
               <h3>
                 <a href={'posts/' + post._id}>{post.title}</a>
