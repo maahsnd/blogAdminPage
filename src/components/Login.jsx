@@ -7,7 +7,6 @@ import Dashboard from './Dashboard';
 export default function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const { user, setUser } = useUserContext();
-  console.log(user, setUser);
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -30,12 +29,10 @@ export default function Login() {
         // Store the JWT token in cookies
         Cookies.set('jwt_token', data.token);
         data.user.authenticated = true;
-        console.log(data.user);
         const userInfo = data.user;
         setUser(userInfo);
         // Redirect to a protected route (e.g., dashboard)
-        console.log(user);
-        navigate('/dashboard');
+        navigate('/');
         return;
       } else {
         // Handle authentication error
