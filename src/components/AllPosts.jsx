@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import { useUserContext } from './UserContext';
+import Cookies from 'js-cookie';
 
-function AllPosts() {
-  const { user, setUser } = useUserContext();
+export default function AllPosts() {
+  const { user } = useUserContext();
+  const [posts, setPosts] = useState([]);
+
   const fetchPosts = async () => {
     try {
       const response = await fetch('http://localhost:3000/posts/', {
@@ -14,39 +17,47 @@ function AllPosts() {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
-        return data;
+        setPosts(data); // Update the posts state with fetched data
       }
     } catch (error) {
       console.error('Error:', error);
     }
   };
+
+  useEffect(() => {
+    if (user && user.authenticated) {
+      fetchPosts(); // Fetch posts when the component mounts
+    }
+  }, [user]);
+
   const editPublishStatus = async (e, post, publishStatusChange) => {
     e.preventDefault();
 
     publishStatusChange ? (post.published = true) : (post.published = false);
     try {
-      await fetch(`http://localhost:3000/posts/${post._id}/edit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`
-        },
-        body: JSON.stringify(post)
-      });
+      const token = Cookies.get('jwt_token');
+      const response = await fetch(
+        `http://localhost:3000/posts/${post._id}/edit`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(post)
+        }
+      );
       if (response.ok) {
-        console.log('post updated successfully');
-        return;
+        fetchPosts(); // Fetch posts again after updating
       } else {
-        // Handle authentication error
         console.error('Authentication failed');
       }
     } catch (error) {
       console.error(error);
     }
   };
-  if (user.authenticated) {
-    const posts = fetchPosts();
+
+  if (user && user.authenticated) {
     return (
       <div>
         <h1>Posts</h1>
@@ -60,11 +71,11 @@ function AllPosts() {
               <p>{post.formatted_date}</p>
               <p>{post.text}</p>
               {post.published ? (
-                <button onClick={() => publishStatusChange(e, post, false)}>
+                <button onClick={(e) => editPublishStatus(e, post, false)}>
                   Unpublish post
                 </button>
               ) : (
-                <button onClick={() => publishStatusChange(e, post, false)}>
+                <button onClick={(e) => editPublishStatus(e, post, true)}>
                   Publish post
                 </button>
               )}
@@ -94,5 +105,3 @@ function AllPosts() {
     return <Login />;
   }
 }
-
-export default Dashboard;
