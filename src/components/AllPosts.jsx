@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Login from './Login';
 import { useUserContext } from './UserContext';
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
 
 export default function AllPosts() {
   const { user } = useUserContext();
@@ -75,6 +76,7 @@ export default function AllPosts() {
               <h4>By: {post.user.user_name}</h4>
               <p>{post.formatted_date}</p>
 
+              <Link to={`posts/${id}`}>View and edit post</Link>
               {post.published ? (
                 <button onClick={(e) => editPublishStatus(e, post, false)}>
                   Unpublish post
@@ -84,6 +86,7 @@ export default function AllPosts() {
                   Publish post
                 </button>
               )}
+
               <hr />
               <h4>Comments</h4>
               {post.comments.length > 0 ? (
