@@ -59,7 +59,7 @@ export default function AllPosts() {
   };
 
   if (user && user.authenticated) {
-    const filteredPosts = posts.filter((post) => post.user == user._id);
+    const filteredPosts = posts.filter((post) => post.user._id == user._id);
     if (filteredPosts.length < 1) {
       return <p>You have no posts</p>;
     }
@@ -76,7 +76,7 @@ export default function AllPosts() {
               <h4>By: {post.user.user_name}</h4>
               <p>{post.formatted_date}</p>
 
-              <Link to={`posts/${id}`}>View and edit post</Link>
+              <Link to={`posts/${post._id}`}>View and edit post</Link>
               {post.published ? (
                 <button onClick={(e) => editPublishStatus(e, post, false)}>
                   Unpublish post
