@@ -70,13 +70,10 @@ export default function AllPosts() {
         {posts.length > 0 ? (
           filteredPosts.map((post) => (
             <div key={post._id}>
-              <h3>
-                <a href={'posts/' + post._id}>{post.title}</a>
-              </h3>
+              <h3>{post.title}</h3>
               <h4>By: {post.user.user_name}</h4>
               <p>{post.formatted_date}</p>
-
-              <Link to={`posts/${post._id}`}>View and edit post</Link>
+              <Link to={`${post._id}`}>View and edit post</Link>
               {post.published ? (
                 <button onClick={(e) => editPublishStatus(e, post, false)}>
                   Unpublish post
