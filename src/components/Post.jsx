@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom';
 
 export default function Post() {
   const { user } = useUserContext();
-  const [post, setPost] = useState([]);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { id } = useParams();
 
   const fetchPost = async () => {
@@ -20,9 +21,16 @@ export default function Post() {
       });
       if (response.ok) {
         const data = await response.json();
-        setPost(data); // Update the post state with fetched data
+        setPost(data);
+        setLoading(false);
+      } else {
+        // Handle errors here, e.g., redirect to an error page
+        setLoading(false);
+        console.error('Error:', response.status, response.statusText);
       }
     } catch (error) {
+      // Handle network errors or other exceptions
+      setLoading(false);
       console.error('Error:', error);
     }
   };
@@ -31,10 +39,11 @@ export default function Post() {
     if (user && user.authenticated) {
       fetchPost(); // Fetch post when the component mounts
     }
-  }, [user]);
+  }, [user, loading]); // Include 'id' as a dependency to fetch when the ID changes
 
   const submitEdit = async (e) => {
     e.preventDefault();
+    console.log(post);
     try {
       const token = Cookies.get('jwt_token');
       const response = await fetch(
@@ -49,7 +58,8 @@ export default function Post() {
         }
       );
       if (response.ok) {
-        fetchPost(); // Fetch posts again after updating
+        // Handle successful update
+        fetchPost(); // Fetch post again after updating
       } else {
         console.error('Authentication failed');
       }
@@ -59,7 +69,6 @@ export default function Post() {
   };
 
   const handleInputChange = (e) => {
-    e.preventDefault();
     const { name, value } = e.target;
     setPost({
       ...post,
@@ -67,61 +76,67 @@ export default function Post() {
     });
   };
 
-  if (user && user.authenticated && post.user == user._id) {
+  if (!user || !user.authenticated) {
     return (
       <div>
-        <h1>Edit post:</h1>
-        <form onSubmit={submitEdit}>
-          <input
-            type="text"
-            name="title"
-            value={post.title}
-            onChange={handleInputChange}
-            required
-          />
-          <textarea
-            name="text"
-            value={post.text}
-            onChange={handleInputChange}
-            required
-          ></textarea>
-          <label>
-            Published:
-            <input
-              type="checkbox"
-              name="published"
-              checked={post.published}
-              onChange={(e) =>
-                setPost({ ...post, published: e.target.checked })
-              }
-            />
-          </label>
-          <button type="submit">Save Changes</button>
-        </form>
-        <hr />
-        <h4>Comments</h4>
-        {post.comments.length > 0 ? (
-          post.comments.map((comment) => (
-            <div key={comment._id}>
-              <h5>{comment.user.user_name}</h5>
-              <p>{comment.text}</p>
-              <p>-- {comment.date}</p>
-
-              <hr />
-            </div>
-          ))
-        ) : (
-          <p>No comments yet!</p>
-        )}
-        <hr />
+        {loading ? <p>Loading</p> : ''}
+        <>
+          <Link to="/log-in">Login</Link>
+          <Link to="/posts">Posts</Link>{' '}
+        </>
       </div>
     );
-  } else {
-    return (
-      <>
-        <Link to="/log-in">Login</Link>
-        <Link to="/posts">Posts</Link>
-      </>
-    );
   }
+
+  if (!post) {
+    return <p>Loading: {loading}</p>;
+  }
+
+  return !post ? (
+    <p>You do not have permission to edit this post.</p>
+  ) : (
+    <div>
+      <h1>Edit post:</h1>
+      <form onSubmit={submitEdit}>
+        <input
+          type="text"
+          name="title"
+          value={post.title}
+          onChange={handleInputChange}
+          required
+        />
+        <textarea
+          name="text"
+          value={post.text}
+          onChange={handleInputChange}
+          required
+        ></textarea>
+        <label>
+          Published:
+          <input
+            type="checkbox"
+            name="published"
+            checked={post.published}
+            onChange={(e) => setPost({ ...post, published: e.target.checked })}
+          />
+        </label>
+        <button type="submit">Save Changes</button>
+      </form>
+      <hr />
+      <h4>Comments</h4>
+      {post.comments.length > 0 ? (
+        post.comments.map((comment) => (
+          <div key={comment._id}>
+            <h5>{comment.user.user_name}</h5>
+            <p>{comment.text}</p>
+            <p>-- {comment.date}</p>
+            <hr />
+          </div>
+        ))
+      ) : (
+        <p>No comments yet!</p>
+      )}
+      <hr />
+    </div>
+  );
 }
