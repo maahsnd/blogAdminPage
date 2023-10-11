@@ -10,7 +10,7 @@ function Dashboard() {
       <div>
         <h2>Welcome to the Dashboard</h2>
         <Link to="/posts">View All Posts</Link>
-        <Link to="/new-post">Create New Post</Link>
+        <Link to="/posts/new">Create New Post</Link>
       </div>
     );
   } else {
