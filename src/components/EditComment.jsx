@@ -9,6 +9,7 @@ export default function EditComment() {
   const [comment, setComment] = useState(null);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [deleted, setDeleted] = useState(null);
   const { id } = useParams();
 
   const fetchComment = async () => {
@@ -31,7 +32,6 @@ export default function EditComment() {
     } catch (error) {
       // Handle network errors or other exceptions
       setLoading(false);
-      setMessage('Errors' + res.errors);
       console.error('Error:', error);
     }
   };
@@ -81,15 +81,16 @@ export default function EditComment() {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
-          }
+          },
+          body: JSON.stringify({ postid: comment.post })
         }
       );
       if (response.ok) {
         // Handle successful update
-        fetchComment(); // Fetch post again after updating
         setMessage('Comment Deleted');
+        setDeleted(true);
       } else {
-        setMessage('Errors' + res.errors);
+        setMessage('Errors' + response.errors);
         console.error('Authentication failed');
       }
     } catch (error) {
@@ -112,6 +113,15 @@ export default function EditComment() {
         <>
           <Link to="/log-in">Login</Link>
         </>
+      </div>
+    );
+  }
+
+  if (deleted) {
+    return (
+      <div>
+        <Link to={`/posts`}>All Posts</Link>
+        <h3>{message}</h3>
       </div>
     );
   }
