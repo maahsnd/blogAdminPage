@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard';
 import AllPosts from './components/AllPosts';
 import Post from './components/Post';
 import EditComment from './components/EditComment';
+import NewPost from './components/NewPost';
 
 function App() {
   return (
@@ -14,9 +15,10 @@ function App() {
         <Routes>
           <Route path="/comments/:id" element={<EditComment />} />
           <Route path="/log-in" element={<Login />} />
+          <Route path="/posts/new" element={<NewPost />} />
           <Route path="/posts/:id" element={<Post />} />
           <Route path="/posts" element={<AllPosts />} />
-          {/*           <Route path="/new-post" element={<NewPost />} /> */}
+
           <Route path="/" element={<Dashboard />} />
         </Routes>
       </UserProvider>
