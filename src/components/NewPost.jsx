@@ -6,7 +6,9 @@ import { Link } from 'react-router-dom';
 
 export default function AllPosts() {
   const { user } = useUserContext();
-  const [post, setPost] = useState({ user: user._id });
+  const [post, setPost] = useState({ title: '', text: '', published: '' });
+  const [message, setMessage] = useState(null);
+  const [postCreated, setPostCreated] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,11 +26,45 @@ export default function AllPosts() {
     });
   };
 
-  const submitNewPost = (e) => {
+  const submitNewPost = async (e) => {
     e.preventDefault();
-    console.log(post);
+    const body = post;
+    body.user = user._id;
+    try {
+      const token = Cookies.get('jwt_token');
+      const response = await fetch('http://localhost:3000/posts/new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(body)
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        // Handle successful create
+        setMessage('Post Created');
+        setPostCreated(data.id);
+      } else {
+        setMessage(
+          `Error in field ${data.errors[0].path}:${data.errors[0].msg} `
+        );
+        console.error('Authentication failed');
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
+  if (user && user.authenticated && postCreated) {
+    return (
+      <div>
+        <h3>{message}</h3>
+        <Link to={`/posts/${postCreated}`}>View post</Link>
+      </div>
+    );
+  }
   if (user && user.authenticated) {
     return (
       <div>
@@ -58,6 +94,7 @@ export default function AllPosts() {
           />
           <button type="submit">Submit</button>
         </form>
+        <h4>{message}</h4>
       </div>
     );
   } else {
