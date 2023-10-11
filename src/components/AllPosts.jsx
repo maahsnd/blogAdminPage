@@ -3,6 +3,7 @@ import Login from './Login';
 import { useUserContext } from './UserContext';
 import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
+import EditCommentBtn from './EditCommentBtn';
 
 export default function AllPosts() {
   const { user } = useUserContext();
@@ -92,6 +93,7 @@ export default function AllPosts() {
                     <h5>{comment.user.user_name}</h5>
                     <p>{comment.text}</p>
                     <p>-- {comment.date}</p>
+                    <EditCommentBtn id={comment._id} />
                     <hr />
                   </div>
                 ))
