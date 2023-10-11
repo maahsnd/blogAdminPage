@@ -44,7 +44,6 @@ export default function Post() {
 
   const submitEdit = async (e) => {
     e.preventDefault();
-    console.log(post);
     try {
       const token = Cookies.get('jwt_token');
       const response = await fetch(
@@ -83,7 +82,7 @@ export default function Post() {
         {loading ? <p>Loading</p> : ''}
         <>
           <Link to="/log-in">Login</Link>
-          <Link to="/posts">Posts</Link>{' '}
+          <Link to="/posts">Posts</Link>
         </>
       </div>
     );
@@ -94,9 +93,15 @@ export default function Post() {
   }
 
   return !post ? (
-    <p>You do not have permission to edit this post.</p>
+    <>
+      {' '}
+      <p>You do not have permission to edit this post.</p>{' '}
+      <Link to="/posts">All Posts</Link>
+    </>
   ) : (
     <div>
+      <Link to="/posts">Return to All Posts</Link>
+      <hr />
       <h1>Edit post:</h1>
       <form onSubmit={submitEdit}>
         <input
