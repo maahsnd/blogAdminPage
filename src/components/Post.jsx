@@ -23,7 +23,9 @@ export default function Post() {
       });
       if (response.ok) {
         const data = await response.json();
-        setPost(data);
+        if (data.user._id === user._id) {
+          setPost(data);
+        }
         setLoading(false);
       } else {
         // Handle errors here, e.g., redirect to an error page
@@ -123,7 +125,7 @@ export default function Post() {
     );
   }
 
-  if (!post) {
+  if (!post && loading) {
     return <p>Loading: {loading}</p>;
   }
 
