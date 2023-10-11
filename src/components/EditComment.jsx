@@ -31,6 +31,7 @@ export default function EditComment() {
     } catch (error) {
       // Handle network errors or other exceptions
       setLoading(false);
+      setMessage('Errors' + res.errors);
       console.error('Error:', error);
     }
   };
@@ -61,6 +62,7 @@ export default function EditComment() {
         fetchComment(); // Fetch post again after updating
         setMessage('Comment updated');
       } else {
+        setMessage('Errors' + res.errors);
         console.error('Authentication failed');
       }
     } catch (error) {
@@ -87,6 +89,7 @@ export default function EditComment() {
         fetchComment(); // Fetch post again after updating
         setMessage('Comment Deleted');
       } else {
+        setMessage('Errors' + res.errors);
         console.error('Authentication failed');
       }
     } catch (error) {
