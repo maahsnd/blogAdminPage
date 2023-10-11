@@ -68,6 +68,7 @@ export default function AllPosts() {
   if (user && user.authenticated) {
     return (
       <div>
+        <Link to="/">Dashboard</Link>
         <h1>Create New Post</h1>
         <form onSubmit={submitNewPost}>
           <label htmlFor="title">Title</label>

@@ -67,6 +67,7 @@ export default function AllPosts() {
 
     return (
       <div>
+        <Link to="/">Dashboard</Link>
         <h1>Posts</h1>
         {posts.length > 0 ? (
           filteredPosts.map((post) => (
