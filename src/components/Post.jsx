@@ -10,6 +10,7 @@ export default function Post() {
   const { user } = useUserContext();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [deleted, setDeleted] = useState(null);
   const { id } = useParams();
 
   const fetchPost = async () => {
@@ -76,6 +77,31 @@ export default function Post() {
     });
   };
 
+  const deletePost = async (e) => {
+    e.preventDefault();
+    try {
+      const token = Cookies.get('jwt_token');
+      const response = await fetch(
+        `http://localhost:3000/posts/${post._id}/delete`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      if (response.ok) {
+        // Handle successful deletion
+        setDeleted(true);
+      } else {
+        console.error('Authentication failed');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (!user || !user.authenticated) {
     return (
       <div>
@@ -85,6 +111,15 @@ export default function Post() {
           <Link to="/posts">Posts</Link>
         </>
       </div>
+    );
+  }
+
+  if (deleted) {
+    return (
+      <>
+        <h3>Post deleted</h3>
+        <Link to="/posts">View all posts</Link>
+      </>
     );
   }
 
@@ -144,6 +179,7 @@ export default function Post() {
         <p>No comments yet!</p>
       )}
       <hr />
+      <button onClick={deletePost}>Delete Post</button>
     </div>
   );
 }
